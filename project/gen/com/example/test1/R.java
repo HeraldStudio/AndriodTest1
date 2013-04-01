@@ -25,9 +25,9 @@ public final class R {
     }
     public static final class id {
         public static final int action_settings=0x7f080005;
-        public static final int button1=0x7f080004;
-        public static final int editText1=0x7f080002;
-        public static final int editText2=0x7f080003;
+        public static final int cardNumber=0x7f080004;
+        public static final int login=0x7f080002;
+        public static final int password=0x7f080003;
         public static final int textView1=0x7f080001;
         public static final int textView2=0x7f080000;
     }
