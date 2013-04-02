@@ -10,20 +10,28 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
-    @Override
+   EditText etCardNumber;
+   EditText etPassword ;
+   Button btLogin;
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button btLogin = (Button)findViewById(R.id.login);
-        final EditText etCardNumber = (EditText)findViewById(R.id.cardNumber);
-        final EditText etPassword   = (EditText)findViewById(R.id.password);
+        btLogin= (Button)findViewById(R.id.login);
+        etCardNumber = (EditText)findViewById(R.id.cardNumber);
+        etPassword   = (EditText)findViewById(R.id.password);
         btLogin.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				 String sCardNumber = etCardNumber.getText().toString();
 			     String sPassword = etPassword.getText().toString();	
-			     new  AlertDialog.Builder(MainActivity.this).setTitle("µÇÂ½").
+			     if(login(sCardNumber,sPassword))
+			     {
+			    	 
+			    	 
+			     }
+			     new  AlertDialog.Builder(MainActivity.this).setTitle("").
 			    		 setMessage(sCardNumber+","+sPassword).
 			    		 show();
 				
@@ -40,4 +48,8 @@ public class MainActivity extends Activity {
         return true;
     }
     
+    private Boolean login(String cardNumber, String password)
+    {
+    	return false;
+    }
 }
