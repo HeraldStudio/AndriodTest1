@@ -1,5 +1,14 @@
 package com.example.test1;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -26,14 +35,30 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				 String sCardNumber = etCardNumber.getText().toString();
 			     String sPassword = etPassword.getText().toString();	
-			     if(login(sCardNumber,sPassword))
+			     if( sCardNumber == null || sPassword == null)
 			     {
-			    	 
-			    	 
+			    	 return ;
 			     }
-			     new  AlertDialog.Builder(MainActivity.this).setTitle("").
-			    		 setMessage(sCardNumber+","+sPassword).
-			    		 show();
+			     try {
+					if(login(sCardNumber,sPassword))
+					 {
+						 new  AlertDialog.Builder(MainActivity.this).setTitle("").
+						 setMessage(sCardNumber+","+sPassword).
+						 show();
+						 
+					 }
+				} catch (ClientProtocolException e) {
+					 new  AlertDialog.Builder(MainActivity.this).setTitle("").
+					 setMessage("网络连接失败").
+					 show();
+//					e.printStackTrace();
+				} catch (IOException e) {
+					 new  AlertDialog.Builder(MainActivity.this).setTitle("").
+					 setMessage("网络连接失败").
+					 show();
+//					e.printStackTrace();
+				}
+			     
 				
 			}
 		});
@@ -48,8 +73,39 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    private Boolean login(String cardNumber, String password)
+    private Boolean login(String cardNumber, String password) throws ClientProtocolException, IOException
     {
-    	return false;
+    	class param implements NameValuePair
+    	{
+    		private String name;
+    		private String value;
+    		param(String name,String value)
+    		{
+    			this.name = name;
+    			this.value = value;
+    		}
+			@Override
+			public String getName() {
+				return name;
+			}
+
+			@Override
+			public String getValue() {
+				return value;
+			}
+    		
+    	}
+    	List<NameValuePair> list = new ArrayList<NameValuePair>();
+    	list.add(new param("cardnumber",cardNumber));
+    	list.add(new param("password",password));
+    	String url = "http://121.248.63.105:8080/authentication/";
+//    	String url ="http://127.0.0.1";
+    	String result=HttpConnecter.post(url, list); 
+    	if(result == null)
+    	{
+    		return false;
+    	}
+    	
+    	return true;
     }
 }
