@@ -39,23 +39,25 @@ public class MainActivity extends Activity {
 			     {
 			    	 return ;
 			     }
+			     AlertDialog.Builder message = new  AlertDialog.Builder(MainActivity.this);
+			     String result = null; 
 			     try {
-					if(login(sCardNumber,sPassword))
+			    	result = login(sCardNumber,sPassword);
+					if(result != null)
 					 {
-						 new  AlertDialog.Builder(MainActivity.this).setTitle("").
-						 setMessage(sCardNumber+","+sPassword).
-						 show();
-						 
+						
+						 String[] userInfo = result.split(","); 
+						 message.setMessage("欢迎你，"+userInfo[0]).show();
 					 }
+					else
+					{
+						message.setMessage("用户名或密码错误").show();
+					}
 				} catch (ClientProtocolException e) {
-					 new  AlertDialog.Builder(MainActivity.this).setTitle("").
-					 setMessage("网络连接失败").
-					 show();
+					 message.setMessage("ClientProtocolException").show();
 //					e.printStackTrace();
 				} catch (IOException e) {
-					 new  AlertDialog.Builder(MainActivity.this).setTitle("").
-					 setMessage("网络连接失败").
-					 show();
+					message.setMessage("IOException").show();
 //					e.printStackTrace();
 				}
 			     
@@ -73,7 +75,7 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    private Boolean login(String cardNumber, String password) throws ClientProtocolException, IOException
+    private String login(String cardNumber, String password) throws ClientProtocolException, IOException
     {
     	class param implements NameValuePair
     	{
@@ -96,16 +98,18 @@ public class MainActivity extends Activity {
     		
     	}
     	List<NameValuePair> list = new ArrayList<NameValuePair>();
-    	list.add(new param("cardnumber",cardNumber));
+    	list.add(new param("username",cardNumber));
     	list.add(new param("password",password));
     	String url = "http://121.248.63.105:8080/authentication/";
-//    	String url ="http://127.0.0.1";
+//    	String url = "http://www.baidu.com";
     	String result=HttpConnecter.post(url, list); 
-    	if(result == null)
-    	{
-    		return false;
-    	}
-    	
-    	return true;
+//    	String result=HttpConnecter.get(url); 
+//    	if(result == null)
+//    	{
+//    		return false;
+//    	}
+//    	
+//    	return true;
+    	return result;
     }
 }
