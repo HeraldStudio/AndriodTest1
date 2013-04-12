@@ -9,6 +9,10 @@ import org.apache.http.client.ClientProtocolException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -87,10 +91,7 @@ public class MainActivity extends Activity {
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
 				message.setMessage("ClientProtocolException").show();
-			} catch (IOException e) {
-				e.printStackTrace();
-				message.setMessage("IOException").show();
-			} catch(Exception e){
+			} catch(IOException e){
 				e.printStackTrace();
 				message.setMessage("Error").show();
 			}
@@ -99,8 +100,19 @@ public class MainActivity extends Activity {
 		@Override
 	    protected void onPostExecute(String result) {
 			if(result != null){
-				String[] userInfo = result.split(","); 
-				message.setMessage("欢迎你，"+userInfo[0]).show();
+				if(result == "ConnectTimeoutException"){
+					message.setMessage("网络连接超时").show();
+				}else{
+					String[] userInfo = result.split(","); 
+//				message.setMessage("欢迎你，"+userInfo[0]).show();
+					Bundle data = new Bundle();
+					data.putString("userName", userInfo[0]);
+					Intent intent = new Intent(MainActivity.this,CurriculumActivity.class);
+					intent.putExtras(data);
+					startActivity(intent);
+
+				}
+				
 			}else{
 				message.setMessage("用户名或密码错误").show();
 			}
@@ -109,11 +121,18 @@ public class MainActivity extends Activity {
 	}
     private void login(String cardNumber, String password) 
     {
-    	List<NameValuePair> list = new ArrayList<NameValuePair>();
-    	list.add(new param("username",cardNumber));
-    	list.add(new param("password",password));
-    	String url = "http://121.248.63.105:8080/authentication/";
-    	LoginTask loginTask = new LoginTask(url,list);
-    	loginTask.execute();
+    	
+    	ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    	if(networkInfo == null || !networkInfo.isConnected()){
+    		message.setMessage("网络连接错误").show();
+    	}else{
+    		List<NameValuePair> list = new ArrayList<NameValuePair>();
+        	list.add(new param("username",cardNumber));
+        	list.add(new param("password",password));
+        	String url = "http://121.248.63.105:8080/authentication/";
+        	LoginTask loginTask = new LoginTask(url,list);
+        	loginTask.execute();
+    	}
     }
 }

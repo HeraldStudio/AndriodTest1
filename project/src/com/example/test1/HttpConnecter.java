@@ -12,7 +12,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 public class HttpConnecter {
 	public static String  get(String uri) throws ClientProtocolException,IOException
@@ -36,27 +40,35 @@ public class HttpConnecter {
 		return null;
 	}
 	
-	public static String post(String uri,List<NameValuePair>formparams) throws ClientProtocolException, IOException
+	public static String post(String uri,List<NameValuePair>formparams) throws ClientProtocolException,IOException
 	{
-		HttpClient httpClient = new DefaultHttpClient();
+		HttpParams httpParameters = new BasicHttpParams();
+		int timeout = 3000;
+		HttpConnectionParams.setConnectionTimeout(httpParameters, timeout);
+		HttpConnectionParams.setSoTimeout(httpParameters,timeout);
+		HttpClient httpClient = new DefaultHttpClient(httpParameters);
 		UrlEncodedFormEntity  entity = new UrlEncodedFormEntity(formparams,"UTF-8");
 		HttpPost httpPost = new HttpPost(uri);
 		httpPost.setEntity(entity);
-		HttpResponse httpResponse = httpClient.execute(httpPost);
-		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		if(statusCode >=200 && statusCode <400)
-		{
-			StringBuilder stringBuilder  =  new StringBuilder();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(),"UTF-8"));
-			for(String s = reader.readLine();s!=null;s=reader.readLine())
+		try{
+			HttpResponse httpResponse = httpClient.execute(httpPost);
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
+			if(statusCode >=200 && statusCode <400)
 			{
-				stringBuilder.append(s);
+				StringBuilder stringBuilder  =  new StringBuilder();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(),"UTF-8"));
+				for(String s = reader.readLine();s!=null;s=reader.readLine())
+				{
+					stringBuilder.append(s);
+				}
+				reader.close();
+				return stringBuilder.toString();
+				
 			}
-			reader.close();
-			return stringBuilder.toString();
-			
+			return null;
+		}catch(ConnectTimeoutException e){
+			return "ConnectTimeoutException";
 		}
-		return null;
 		
 	}
 }
