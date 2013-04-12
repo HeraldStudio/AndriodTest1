@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
    AlertDialog.Builder message; 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState); 
         setContentView(R.layout.activity_main);
         btLogin= (Button)findViewById(R.id.login);
         etCardNumber = (EditText)findViewById(R.id.cardNumber);
