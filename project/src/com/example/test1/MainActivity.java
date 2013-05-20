@@ -16,9 +16,10 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 
 public class MainActivity extends Activity {
 
@@ -26,14 +27,20 @@ public class MainActivity extends Activity {
    EditText etPassword ;
    Button btLogin;
    AlertDialog.Builder message; 
+   ExpandableListView elp;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); 
+       //// ViewGroup viewgroup = (ViewGroup)getLayoutInflater().inflate(R.layout.activity_main, null);
+       // CircleChat  mCircleChat = new CircleChat(this);
+       // viewgroup.addView(mCircleChat);
         setContentView(R.layout.activity_main);
-        btLogin= (Button)findViewById(R.id.login);
+       /* btLogin= (Button)findViewById(R.id.login);
         etCardNumber = (EditText)findViewById(R.id.cardNumber);
-        etPassword   = (EditText)findViewById(R.id.password);
-        btLogin.setOnClickListener(new View.OnClickListener() {
+        etPassword   = (EditText)findViewById(R.id.password);*/
+        elp = (ExpandableListView)findViewById(R.id.expandableListView1);
+        elp.setAdapter(new ElvAdapter(this));
+       /* btLogin.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -46,7 +53,7 @@ public class MainActivity extends Activity {
 			     }
 			}
 		});
-        
+        */
     }
 
 
